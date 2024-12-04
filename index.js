@@ -49,6 +49,12 @@ async function run() {
       
       res.send(movie);
     })
+
+    /// delete single movie in database and UI-------------
+    app.delete('/delete/:id', async(req, res) => {
+      const result = await movieCollection.deleteOne({ _id: new ObjectId(req.params.id) });
+      res.send(result);
+    })
    
     // Create a database and  collection my info and stored data-----------------
 
@@ -59,6 +65,25 @@ async function run() {
       res.send(result);
     })
 
+    /// Update Movie data in database and UI 
+    app.put('/updatemovie/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id)};
+      const options = { upsert: true };
+      const updateMovie = req.body;
+      const updated = {
+        $set: {
+          photo: updateMovie.photo,
+          title: updateMovie.title,
+          genre: updateMovie.genre,
+          duration: updateMovie.duration,
+          year: updateMovie.year,
+          ratting: updateMovie.ratting
+        }
+      }
+      const result = await movieCollection.updateOne(filter, updated, options);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
