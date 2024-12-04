@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 require('dotenv').config();
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 const port = process.env.PORT || 3000;
 
@@ -14,7 +15,6 @@ app.get('/', (req, res) => {
 })
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.eywn0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -26,15 +26,38 @@ const client = new MongoClient(uri, {
   }
 });
 
-/// User name = Movie Portal
-/// User password = E3xswRDzWEb5Vt4h
 
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
    
-    
+    const movieCollection = client.db("movies").collection("movies");
+
+
+    /// get data functionality and showing data in UI---------
+
+    app.get('/movie', async(req, res) => {
+      const movies = await movieCollection.find().toArray();
+      res.send(movies);
+    })
+    /// get data SingleData functionality and showing data in UI---------
+
+    app.get('/details/:id', async(req, res) => {
+      const movie = await movieCollection.findOne({ _id: new ObjectId(req.params.id) });
+      console.log(movie);
+      
+      res.send(movie);
+    })
+   
+    // Create a database and  collection my info and stored data-----------------
+
+    app.post('/movie', async(req, res) => {
+      const movie = req.body;
+      console.log(movie);
+      const result = await movieCollection.insertOne(movie);
+      res.send(result);
+    })
 
 
     // Send a ping to confirm a successful connection
@@ -42,7 +65,7 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
