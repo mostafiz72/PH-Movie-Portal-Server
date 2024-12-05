@@ -38,7 +38,12 @@ async function run() {
     /// get data functionality and showing data in UI---------
 
     app.get('/movie', async(req, res) => {
-      const movies = await movieCollection.find().toArray();
+      const { searchParams } = req.query;
+      let option = {};
+      if(searchParams){
+        option = {title: {$regex: searchParams, $options: "i"}}
+      }
+      const movies = await movieCollection.find(option).toArray();
       res.send(movies);
     })
     /// get data SingleData functionality and showing data in UI---------
