@@ -33,6 +33,7 @@ async function run() {
     await client.connect();
    
     const movieCollection = client.db("movies").collection("movies");
+    const favoriteCollection = client.db("movies").collection("favorite");
 
 
     /// get data functionality and showing data in UI---------
@@ -61,6 +62,34 @@ async function run() {
       res.send(result);
     })
    
+    // Create a collection database and collection User favorites movies -----------------
+
+    app.post('/addfavorite', async(req, res) => {
+      const favorite = req.body;
+      console.log(favorite);
+      const result = await favoriteCollection.insertOne(favorite);
+      res.send(result);
+    })   
+    
+    /// get data functionality and showing data in UI---------
+
+    app.get('/addfavorite', async(req, res) => {
+      const favorites = await favoriteCollection.find({}).toArray();
+      res.send(favorites);
+    })
+
+    /// favorite movie deleted functionality starting -----------------------------
+
+    app.delete('/favorite/:id', async(req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id : new ObjectId(id) }
+      const results = await favoriteCollection.deleteOne(query);
+      res.send(results);
+      // const result = await favoriteCollection.deleteOne({ _id: new ObjectId(req.params.id) });
+      // res.send(result);
+    })
+
     // Create a database and  collection my info and stored data-----------------
 
     app.post('/movie', async(req, res) => {
