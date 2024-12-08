@@ -58,8 +58,6 @@ async function run() {
 
     app.get('/details/:id', async(req, res) => {
       const movie = await movieCollection.findOne({ _id: new ObjectId(req.params.id) });
-      console.log(movie);
-      
       res.send(movie);
     })
 
@@ -73,7 +71,7 @@ async function run() {
 
     app.post('/addfavorite', async(req, res) => {
       const favorite = req.body;
-      console.log(favorite);
+      // console.log(favorite);
       const result = await favoriteCollection.insertOne(favorite);
       res.send(result);
     })   
@@ -89,7 +87,7 @@ async function run() {
 
     app.delete('/favorite/:id', async(req, res) => {
       const id = req.params.id;
-      console.log(id);
+      // console.log(id);
       const query = { _id : new ObjectId(id) }
       const results = await favoriteCollection.deleteOne(query);
       res.send(results);
@@ -101,7 +99,7 @@ async function run() {
 
     app.post('/movie', async(req, res) => {
       const movie = req.body;
-      console.log(movie);
+      // console.log(movie);
       const result = await movieCollection.insertOne(movie);
       res.send(result);
     })
