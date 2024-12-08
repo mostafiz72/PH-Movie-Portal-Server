@@ -112,7 +112,8 @@ async function run() {
           genre: updateMovie.genre,
           duration: updateMovie.duration,
           year: updateMovie.year,
-          ratting: updateMovie.ratting
+          ratting: updateMovie.ratting,
+          summary: updateMovie.summary
         }
       }
       const result = await movieCollection.updateOne(filter, updated, options);
